@@ -14,14 +14,14 @@
 				<h2 class="products-title">Login</h2>
 			</div>
 			<div class="col-6"> 
-				<form action="/user/login/" method="POST">
+				<form action="/user/login/" method="POST" enctype="multipart/form-data">
 					<div class="row product-detail">
 						<div class="col-12">
 							<label for="email" class="form-label">Email:</label>
 							<input type="text" id="email" name="email" placeholder="Ej: example@example.com" class="form-input" value="">
 						</div>
 						<div class="col-12">
-							<label for="price" class="form-label">Contraseña:</label>
+							<label for="password" class="form-label">Contraseña:</label>
 							<input type="password" id="password" name="password" class="form-input">
 						</div>
 						<div class="col-12">
