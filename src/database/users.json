@@ -1,8 +1,14 @@
 [
-{
-    "id": "1",
-    "email": "example@example.com",
-    "password": "$2a$10$YJNmWHie1PjNZKcUNmlq.O.3pmOUidm8w",
-    "avatar": "image-example.jpg"
-}
+ {
+  "id": 1,
+  "email": "example@example.com",
+  "password": "$2a$10$YJNmWHie1PjNZKcUNmlq.O.3pmOUidm8w",
+  "avatar": "image-example.jpg"
+ },
+ {
+  "id": 2,
+  "email": "ivan@mail.com",
+  "password": "$2b$10$9Kgmhp8VyqGOhgMs8rKiqua7JPMAkJYG22LpDP54DUfJzX5Arweme",
+  "avatar": "avatar_Perfil_1607445618932.jpg"
+ }
 ]

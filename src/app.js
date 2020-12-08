@@ -4,8 +4,10 @@ const cookieParser = require('cookie-parser');
 const express = require('express');
 const logger = require('morgan');
 const path = require('path');
+const session = require('express-session')
 const methodOverride = require('method-override'); // Pasar poder usar los métodos PUT y DELETE
-
+const cookiesCheck = require('../src/middlewares/cookiesCheck')
+const sessionCheck = require('../src/middlewares/sessionCheck')
 // ************ express() - (don't touch) ************
 const app = express();
 
@@ -15,8 +17,16 @@ app.use(express.static(path.join(__dirname, '../public')));  // Necesario para l
 app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev'));
 app.use(express.json());
+app.use(session({
+  secret: 'Mmm',
+  resave: false,
+  saveUninitialized: true,
+}));
 app.use(cookieParser());
+app.use(cookiesCheck);
+app.use(sessionCheck);
 app.use(methodOverride('_method')); // Pasar poder pisar el method="POST" en el formulario por PUT y DELETE
+
 
 // ************ Template Engine - (don't touch) ************
 app.set('view engine', 'ejs');

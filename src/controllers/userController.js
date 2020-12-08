@@ -4,14 +4,15 @@ const fs = require('fs');
 const {check, validationResult, body} = require('express-validator'); 
 const bycrypt = require('bcrypt');
 const { fileLoader } = require('ejs');
+const { getMaxListeners } = require('process');
 
 
 const usersFilePath = path.join(__dirname,'../database/users.json');
 const users = JSON.parse(fs.readFileSync(usersFilePath, {encoding:'utf-8'}));
 
-const writeUsers = function(array){
-    let stringUsers = JSON.stringify(array, null,1);
-    fs.writeFileSync(usersFilePath, stringUsers)
+const writeData = function(data,filePath){
+    let stringUsers = JSON.stringify(data, null," ");
+    fs.writeFileSync(filePath, stringUsers)
 }
 
 const newID = function(){
@@ -25,37 +26,52 @@ module.exports = {
     },
     processRegister: (req, res, next) => {
         let errors = validationResult(req);
+        console.log(errors)
         if (!errors.isEmpty()){
-            console.log(errors)
             return res.render('user/user-register-form', {errors:errors.errors})
         } else {
+            newUserID = newID();
             let newUser ={
-                id: newID(),
+                id: newUserID,
                 email:req.body.email,
                 password:bycrypt.hashSync(req.body.password, 10),
-                avatar:req.files[0].filename
+                avatar:'default-image.png'
             }
-            let usersToSave = JSON.stringify([...users, newUser]);
-            console.log(usersToSave)
-            // crear una variable de objeto literal con el nuevo usuario (en la cual debemos hashear la contraseña y poner el nombre de la imagen
-            // crear un array tomando los usuarios y agregando el nuevo usuario
-    
-            // escribir en la base de datos
-            return res.send('Registro completo')};
+            if (req.files[0]){
+                newUser.avatar=req.files[0].filename; 
+            }
+            let usersToSave = [...users, newUser];
+            writeData(usersToSave, usersFilePath);
+            return res.render('user/profile', {user:newUser})};
     },
     showLogin: (req, res) => {
-        // Do the magic
-        return res.send('Do the magic');
+        return res.render('user/user-login-form');
     },
     processLogin: (req, res) => {
-        // Do the magic
-        return res.send('Do the magic');
+        let errors = validationResult(req);
+        
+        if (!errors.isEmpty()){
+            return res.render('user/user-login-form', {errors:errors.errors})
+        }else{
+            let userFound = users.find(function(user){return user.email == req.body.email})
+                if(!bycrypt.compareSync(req.body.password, userFound.password)){
+                res.render('user/user-login-form', {errors:[{param:"password", msg:"Contraseña incorrecta"}]})  
+                } else {
+                req.session.userLogged = userFound.email;
+                    if (req.body.remember!=undefined){
+                    res.cookie('userEmail',userFound.email,{maxAge:1000*60});
+                    }
+                return res.render('user/profile', {user:userFound})
+            }
+            };
     },
     showProfile: (req, res) => {
-        return res.render('user/profile');
+        let userFound = users.find(function(user){return user.email == req.userEmail})
+        return res.render('user/profile',{user:userFound});
     },
     logout: (req, res) => {
-        // Do the magic
+        res.cookie('userEmail'," ",{maxAge:-60});
+        req.session.userLogged = undefined;
         return res.redirect('/');
     }
 

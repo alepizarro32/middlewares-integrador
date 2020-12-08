@@ -407,6 +407,10 @@ textarea.form-input {
   padding: 15px;
 }
 
+.validation-error {
+  font-size: 0.8em;
+  color: #E11A1A;
+}
 
 
 /*====== Media-Queries ======*/

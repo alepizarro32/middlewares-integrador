@@ -12,6 +12,7 @@
 			<div class="col-12">
 				<h2 class="products-title">Registro</h2>
 			</div>
+			<% if (typeof errors == 'undefined') {%>
 			<div class="col-6">
 				<form action="/user/register" method="POST" enctype="multipart/form-data" >
 					<div class="row product-detail">
@@ -40,6 +41,36 @@
 					</div>
 				</form>
 			</div>
+			<%} else {%>
+				<div class="col-6">
+					<form action="/user/register" method="POST" enctype="multipart/form-data" >
+						<div class="row product-detail">
+							<div class="col-12">
+							<label for="email" class="form-label">Email: * <span class="validation-error"><%for (error of errors){if(error.param == "email"){%><%=error.msg%> <%}}%></span></label>
+								<input type="text" id="email" name="email" placeholder="Ej: example@example.com" class="form-input" value="">
+							</div>
+							<div class="col-12 row">
+								<label for="image" class="form-label col-12">Avatar: <span class="validation-error"><%for (error of errors){if(error.param == "avatar"){%><%=error.msg%> <%}}%></span></label>
+								<input type="file" id="image" name="avatar" class="form-file col-12">
+							</div>
+							<div class="col-12">
+								<label for="password" class="form-label">Contraseña: * <span class="validation-error"><%for (error of errors){if(error.param == "password"){%><%=error.msg%> <%}}%></span></label>
+								<input type="password" id="password" name="password" class="form-input">
+							</div>
+							<div class="col-12">
+								<label for="retype" class="form-label">Repite la contraseña: * <span class="validation-error"><%for (error of errors){if(error.param == "retype"){%><%=error.msg%> <%}}%></span></label>
+								<input type="password" id="retype" name="retype" class="form-input">
+							</div>
+							<div class="mt-5 col-12">
+								<button type="submit" class="buy-now-button">Registrarse</button>
+							</div>
+							<div class="mt-3 col-12">
+								<p>(*) Campos obligatorios.</p>
+							</div>
+						</div>
+					</form>
+				</div>
+				<%}%>
 		</div>
 
 	</div>
