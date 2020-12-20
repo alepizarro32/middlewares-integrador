@@ -1,6 +1,8 @@
+const { compareSync } = require("bcrypt");
 const { body, check } = require("express-validator")
 const fs = require('fs');
 const path = require('path')
+const bycrypt = require('bcrypt');
 const usersFilePath = path.join(__dirname,'../database/users.json');
 const usersList = JSON.parse(fs.readFileSync(usersFilePath, {encoding:'utf-8'}));
 
@@ -14,29 +16,26 @@ const usersValidator= {
         .custom(
             function(value, {req}){
                 let userFound = usersList.find(function(user){return user.email==value});
-                if (userFound){return false}else{ return true}
+                return(!userFound)
             }
         )
         .withMessage('El email ya está registrado'),
         body('password').isLength({min:8}).withMessage('La contraseña debe tener al menos 8 caracteres')
         .bail(),
         body('retype').custom(function(value, {req}){
-            if (value == req.body.password) {
-                return true
-            } else {
-                return false
-            }
-        }).withMessage('Las contraseñas no coinciden.'),
+            return (value == req.body.password)
+            })
+        .withMessage('Las contraseñas no coinciden.'),
         body('avatar')
         .custom(function(value,{req}){
-            if (req.files[0]){return true} else {return false}
+            return req.files[0]
         }).withMessage('El avatar es obligatorio')
         .bail()
         .custom(function(value,{req}){
             let validExt = ['.png', '.jpg', '.jpeg']
             let fileExt = path.extname(req.files[0].originalname)
             let foundExt = validExt.find(function(ext){return ext==fileExt})
-            if (foundExt){return true} else {return false}
+            return (foundExt)
         }).withMessage('Los formatos admitidos son .jpg, .jpeg o .png')
     ],
     login: [
@@ -47,7 +46,7 @@ const usersValidator= {
         .custom(
             function(value, {req}){
                 let userFound = usersList.find(function(user){return user.email==value});
-                if (userFound){return true}else{ return false}
+                return (userFound)
             }
         )
         .withMessage('El usuario no existe')
@@ -55,6 +54,12 @@ const usersValidator= {
         body('password')
         .isLength({min:8}).withMessage('La contraseña debe tener 8 caracteres.')
         .bail()
+        .custom(
+            function(value,{req}){
+                let userFound = usersList.find(function(user){return user.email == req.body.email});
+                let comparePass = bycrypt.compareSync(value, userFound.password);
+                return comparePass;}
+        ).withMessage("Contraseña incorrecta")
     ]
 }
 

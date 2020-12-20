@@ -10,5 +10,11 @@
   "email": "ivan@mail.com",
   "password": "$2b$10$9Kgmhp8VyqGOhgMs8rKiqua7JPMAkJYG22LpDP54DUfJzX5Arweme",
   "avatar": "avatar_Perfil_1607445618932.jpg"
+ },
+ {
+  "id": 3,
+  "email": "alepizarro32@gmail.com",
+  "password": "$2b$10$yo.KK9OY4p8A3B353N2LNusLn0WN5wa/08auoVifXYnIj/51aztGO",
+  "avatar": "avatar_jimmy_1607995108438.png"
  }
 ]

@@ -1,10 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 //const multer = require ('multer')
-const {check, validationResult, body} = require('express-validator'); 
+const {validationResult} = require('express-validator'); 
 const bycrypt = require('bcrypt');
-const { fileLoader } = require('ejs');
-const { getMaxListeners } = require('process');
 
 
 const usersFilePath = path.join(__dirname,'../database/users.json');
@@ -26,7 +24,6 @@ module.exports = {
     },
     processRegister: (req, res, next) => {
         let errors = validationResult(req);
-        console.log(errors)
         if (!errors.isEmpty()){
             return res.render('user/user-register-form', {errors:errors.errors})
         } else {
@@ -49,20 +46,15 @@ module.exports = {
     },
     processLogin: (req, res) => {
         let errors = validationResult(req);
-        
         if (!errors.isEmpty()){
             return res.render('user/user-login-form', {errors:errors.errors})
         }else{
-            let userFound = users.find(function(user){return user.email == req.body.email})
-                if(!bycrypt.compareSync(req.body.password, userFound.password)){
-                res.render('user/user-login-form', {errors:[{param:"password", msg:"Contraseña incorrecta"}]})  
-                } else {
-                req.session.userLogged = userFound.email;
-                    if (req.body.remember!=undefined){
-                    res.cookie('userEmail',userFound.email,{maxAge:1000*60});
-                    }
-                return res.render('user/profile', {user:userFound})
+            let userFound = users.find(function(user){return user.email == req.body.email});
+            req.session.userLogged = userFound.email;
+            if (req.body.remember!=undefined){
+            res.cookie('userEmail',userFound.email,{maxAge:1000*60*60});
             }
+            return res.render('user/profile', {user:userFound})
             };
     },
     showProfile: (req, res) => {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const {check, validationResult, body} = require('express-validator'); 
+const {check, body} = require('express-validator'); 
 const fs = require('fs');
 const path = require('path')
 
@@ -22,8 +22,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 const userController = require('../controllers/userController');
-const { extname } = require('path');
-const { MulterError } = require('multer');
 const usersValidator = require('../middlewares/usersValidator');
 const guestMiddleware = require('../middlewares/guestMiddleware');
 const authMiddleware = require('../middlewares/authMiddleware');
